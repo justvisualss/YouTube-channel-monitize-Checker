@@ -1,0 +1,6 @@
+{
+  "name": "ChannelScope Analytics",
+  "description": "YouTube Channel Analytics, Growth Insights & Revenue Estimator",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

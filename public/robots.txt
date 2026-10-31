@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+Allow: /disclaimer
+Allow: /blog
+Allow: /blog/
+
+Disallow: /api/oauth/callback
+Disallow: /api/oauth/url
+
+Sitemap: https://channelscope.app/sitemap.xml

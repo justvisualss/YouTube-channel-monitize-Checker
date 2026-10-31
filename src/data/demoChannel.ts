@@ -1,0 +1,160 @@
+import { YouTubeChannelItem, YouTubeVideoItem, YouTubePlaylistItem, OwnerAnalyticsSummary } from '../types/youtube';
+
+export const DEMO_CHANNEL: YouTubeChannelItem = {
+  id: 'UCX6OQ3DkcsbYNE6H8uQQuVA',
+  snippet: {
+    title: 'Veritasium (DEMO PREVIEW)',
+    description: 'An element of truth - videos about science, education, and anything interesting. (DEMO DATA)',
+    customUrl: '@veritasium',
+    publishedAt: '2010-07-21T07:18:29Z',
+    thumbnails: {
+      default: { url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=80' },
+      medium: { url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=240&auto=format&fit=crop&q=80' },
+      high: { url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=480&auto=format&fit=crop&q=80' },
+    },
+    country: 'US',
+  },
+  statistics: {
+    viewCount: '2418590124',
+    subscriberCount: '16200000',
+    hiddenSubscriberCount: false,
+    videoCount: '412',
+  },
+  contentDetails: {
+    relatedPlaylists: {
+      uploads: 'UUX6OQ3DkcsbYNE6H8uQQuVA',
+    },
+  },
+  brandingSettings: {
+    channel: {
+      title: 'Veritasium (DEMO PREVIEW)',
+      keywords: '"science" "physics" "education" "experiments" "math" "curiosity"',
+      country: 'US',
+    },
+  },
+  status: {
+    privacyStatus: 'public',
+    isLinked: true,
+  },
+};
+
+export const DEMO_VIDEOS: YouTubeVideoItem[] = [
+  {
+    id: 'demo-vid-1',
+    title: 'The Real Reason Why Planes Can Fly (DEMO)',
+    description: 'The standard Bernoulli explanation taught in school is incomplete. Here is the full fluid dynamics model.',
+    publishedAt: '2026-02-14T15:00:00Z',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&auto=format&fit=crop&q=80',
+    viewCount: 4850000,
+    likeCount: 295000,
+    commentCount: 14200,
+    duration: 'PT22M15S',
+    url: 'https://www.youtube.com',
+  },
+  {
+    id: 'demo-vid-2',
+    title: 'Why It Was Almost Impossible to Make The Blue LED (DEMO)',
+    description: 'The Nobel prize winning breakthrough that took 30 years and hundreds of failures.',
+    publishedAt: '2026-01-20T17:30:00Z',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80',
+    viewCount: 9240000,
+    likeCount: 512000,
+    commentCount: 22800,
+    duration: 'PT34M02S',
+    url: 'https://www.youtube.com',
+  },
+  {
+    id: 'demo-vid-3',
+    title: 'The Simplest Math Problem No One Can Solve (DEMO)',
+    description: 'The Collatz Conjecture: Take any integer. If even divide by 2, if odd multiply by 3 and add 1.',
+    publishedAt: '2025-12-10T14:15:00Z',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80',
+    viewCount: 31200000,
+    likeCount: 1680000,
+    commentCount: 68500,
+    duration: 'PT24M48S',
+    url: 'https://www.youtube.com',
+  },
+  {
+    id: 'demo-vid-4',
+    title: 'Why Dark Matter Might Not Exist (DEMO)',
+    description: 'Investigating Modified Newtonian Dynamics (MOND) and galactic rotation curve anomalies.',
+    publishedAt: '2025-11-04T16:00:00Z',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80',
+    viewCount: 3820000,
+    likeCount: 210000,
+    commentCount: 9400,
+    duration: 'PT19M10S',
+    url: 'https://www.youtube.com',
+  },
+  {
+    id: 'demo-vid-5',
+    title: 'How Quantum Computers Actually Work (DEMO)',
+    description: 'Superposition, entanglement, and why decoherence is the hardest engineering problem on earth.',
+    publishedAt: '2025-10-18T18:00:00Z',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80',
+    viewCount: 6410000,
+    likeCount: 340000,
+    commentCount: 18100,
+    duration: 'PT28M30S',
+    url: 'https://www.youtube.com',
+  },
+];
+
+export const DEMO_PLAYLISTS: YouTubePlaylistItem[] = [
+  {
+    id: 'UUX6OQ3DkcsbYNE6H8uQQuVA',
+    title: 'Uploads from Veritasium (DEMO)',
+    description: 'All public uploads from Veritasium channel.',
+    publishedAt: '2010-07-21T07:18:29Z',
+    itemCount: 412,
+    url: 'https://www.youtube.com',
+    isUploadsPlaylist: true,
+  },
+  {
+    id: 'PLdemo1',
+    title: 'Physics & Fluid Dynamics (DEMO)',
+    description: 'Deep dives into aerodynamic lift, vortices, and fluid resistance.',
+    publishedAt: '2022-04-10T10:00:00Z',
+    itemCount: 28,
+    url: 'https://www.youtube.com',
+    isUploadsPlaylist: false,
+  },
+  {
+    id: 'PLdemo2',
+    title: 'Math Conjectures & Paradoxes (DEMO)',
+    description: 'Puzzles, infinities, and unproven mathematical hypotheses.',
+    publishedAt: '2021-08-15T12:00:00Z',
+    itemCount: 19,
+    url: 'https://www.youtube.com',
+    isUploadsPlaylist: false,
+  },
+];
+
+export const DEMO_OWNER_ANALYTICS: OwnerAnalyticsSummary = {
+  channelId: 'UCX6OQ3DkcsbYNE6H8uQQuVA',
+  startDate: '2026-02-01',
+  endDate: '2026-03-01',
+  totalViews: 38400000,
+  totalSubscribersGained: 142000,
+  totalSubscribersLost: 28000,
+  netSubscribers: 114000,
+  totalEstimatedRevenue: 289152.0,
+  dailyMetrics: [
+    { date: '2026-02-01', views: 1250000, subscribersGained: 4800, subscribersLost: 900, netSubscribers: 3900, estimatedRevenue: 9412.5 },
+    { date: '2026-02-05', views: 1420000, subscribersGained: 5200, subscribersLost: 950, netSubscribers: 4250, estimatedRevenue: 10692.6 },
+    { date: '2026-02-10', views: 1180000, subscribersGained: 4100, subscribersLost: 880, netSubscribers: 3220, estimatedRevenue: 8885.4 },
+    { date: '2026-02-15', views: 2100000, subscribersGained: 8900, subscribersLost: 1200, netSubscribers: 7700, estimatedRevenue: 15813.0 },
+    { date: '2026-02-20', views: 1650000, subscribersGained: 6400, subscribersLost: 1050, netSubscribers: 5350, estimatedRevenue: 12424.5 },
+    { date: '2026-02-25', views: 1390000, subscribersGained: 4900, subscribersLost: 980, netSubscribers: 3920, estimatedRevenue: 10466.7 },
+    { date: '2026-03-01', views: 1540000, subscribersGained: 5600, subscribersLost: 1020, netSubscribers: 4580, estimatedRevenue: 11596.2 },
+  ],
+  audienceGeography: [
+    { country: 'United States', views: 18432000, percentage: 48 },
+    { country: 'United Kingdom', views: 4992000, percentage: 13 },
+    { country: 'Canada', views: 3456000, percentage: 9 },
+    { country: 'Australia', views: 2688000, percentage: 7 },
+    { country: 'Germany', views: 1920000, percentage: 5 },
+    { country: 'Others', views: 6912000, percentage: 18 },
+  ],
+};
