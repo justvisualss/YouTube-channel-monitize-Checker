@@ -11,4 +11,4 @@ Allow: /blog/
 Disallow: /api/oauth/callback
 Disallow: /api/oauth/url
 
-Sitemap: https://channelscope.app/sitemap.xml
+Sitemap: https://youtube-monetization-checker-free.vercel.app/sitemap.xml

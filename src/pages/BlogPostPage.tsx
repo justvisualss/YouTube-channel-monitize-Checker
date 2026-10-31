@@ -37,6 +37,12 @@ export const BlogPostPage: React.FC<BlogPostPageProps> = ({
       metaDesc.setAttribute('content', article.metaDescription);
     }
 
+    // Update canonical link
+    let canonicalTag = document.querySelector('link[rel="canonical"]');
+    if (canonicalTag) {
+      canonicalTag.setAttribute('href', article.canonicalUrl);
+    }
+
     // Article Structured Data
     const articleSchema = {
       '@context': 'https://schema.org',
@@ -52,7 +58,7 @@ export const BlogPostPage: React.FC<BlogPostPageProps> = ({
       publisher: {
         '@type': 'Organization',
         name: 'ChannelScope Analytics',
-        url: 'https://channelscope.app',
+        url: 'https://youtube-monetization-checker-free.vercel.app',
       },
       mainEntityOfPage: {
         '@type': 'WebPage',

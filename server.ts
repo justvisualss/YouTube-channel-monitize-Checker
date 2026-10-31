@@ -16,7 +16,11 @@ const PORT = process.env.PORT || 3000;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY || '';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
-const APP_URL = process.env.APP_URL || `http://localhost:${PORT}`;
+const APP_URL =
+  process.env.APP_URL ||
+  (process.env.NODE_ENV === 'production'
+    ? 'https://youtube-monetization-checker-free.vercel.app'
+    : `http://localhost:${PORT}`);
 const OAUTH_REDIRECT_URI = process.env.GOOGLE_OAUTH_REDIRECT_URI || `${APP_URL}/api/oauth/callback`;
 
 app.use(express.json());
