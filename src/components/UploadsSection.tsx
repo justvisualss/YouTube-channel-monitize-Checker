@@ -48,12 +48,12 @@ export const UploadsSection: React.FC<UploadsSectionProps> = ({
   }, [videos, filterPeriod]);
 
   return (
-    <div className="mt-12 space-y-6">
+    <div className="mt-8 sm:mt-12 space-y-6 w-full min-w-0 overflow-hidden">
       {/* Header and Filter Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#282846] pb-4">
         <div>
-          <h3 className="text-2xl font-bold font-heading text-white flex items-center gap-2">
-            <Video className="w-6 h-6 text-[#ff7e5f]" />
+          <h3 className="text-xl sm:text-2xl font-bold font-heading text-white flex items-center gap-2 break-words">
+            <Video className="w-5 h-5 sm:w-6 sm:h-6 text-[#ff7e5f] flex-shrink-0" />
             Recent Uploads & Video Details
           </h3>
           <p className="text-xs text-gray-400 mt-1">
@@ -62,8 +62,8 @@ export const UploadsSection: React.FC<UploadsSectionProps> = ({
         </div>
 
         {/* Date Filter Buttons */}
-        <div className="flex items-center gap-1.5 bg-[#101026] p-1 rounded-xl border border-[#282846] self-start sm:self-auto">
-          <Filter className="w-3.5 h-3.5 text-gray-500 ml-2 mr-1" />
+        <div className="flex items-center gap-1 bg-[#101026] p-1 rounded-xl border border-[#282846] self-start sm:self-auto flex-wrap max-w-full">
+          <Filter className="w-3.5 h-3.5 text-gray-500 ml-1.5 mr-1 flex-shrink-0" />
           <button
             onClick={() => setFilterPeriod('30')}
             className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${

@@ -106,7 +106,7 @@ export default function App() {
   const currentArticle = activeBlogSlug ? getArticleBySlug(activeBlogSlug) : null;
 
   return (
-    <div className="min-h-screen bg-[#0f0f23] text-white flex flex-col font-sans selection:bg-[#ff4d4d]/30 selection:text-[#00ffcc]">
+    <div className="min-h-screen bg-[#0f0f23] text-white flex flex-col font-sans selection:bg-[#ff4d4d]/30 selection:text-[#00ffcc] overflow-x-hidden w-full max-w-[100vw]">
       {/* Navigation Header */}
       <Header
         activePage={activePage === 'blog-post' ? 'blog' : activePage}

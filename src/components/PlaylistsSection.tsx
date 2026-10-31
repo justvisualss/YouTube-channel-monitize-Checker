@@ -17,10 +17,10 @@ export const PlaylistsSection: React.FC<PlaylistsSectionProps> = ({
   const otherPlaylists = playlists.filter((p) => !p.isUploadsPlaylist && p.id !== uploadsPlaylistId);
 
   return (
-    <div className="mt-12 space-y-6">
+    <div className="mt-8 sm:mt-12 space-y-6 w-full min-w-0 overflow-hidden">
       <div className="border-b border-[#282846] pb-4">
-        <h3 className="text-2xl font-bold font-heading text-white flex items-center gap-2">
-          <ListVideo className="w-6 h-6 text-[#00ffcc]" />
+        <h3 className="text-xl sm:text-2xl font-bold font-heading text-white flex items-center gap-2 break-words">
+          <ListVideo className="w-5 h-5 sm:w-6 sm:h-6 text-[#00ffcc] flex-shrink-0" />
           Public Playlists
         </h3>
         <p className="text-xs text-gray-400 mt-1">
@@ -29,7 +29,7 @@ export const PlaylistsSection: React.FC<PlaylistsSectionProps> = ({
       </div>
 
       {/* 1. Primary Uploads Playlist (Separated as required) */}
-      <div className="bg-gradient-to-r from-[#17172f] to-[#1e1e3b] p-6 rounded-2xl border border-[#2d2d55] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-[#17172f] to-[#1e1e3b] p-4 sm:p-6 rounded-2xl border border-[#2d2d55] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 w-full min-w-0 overflow-hidden">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-[#ff4d4d]/20 border border-[#ff4d4d]/40 flex items-center justify-center flex-shrink-0 text-[#ff4d4d]">
             <PlaySquare className="w-6 h-6" />

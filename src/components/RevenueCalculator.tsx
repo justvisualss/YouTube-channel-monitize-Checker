@@ -70,23 +70,23 @@ export const RevenueCalculator: React.FC<RevenueCalculatorProps> = ({
       : lifetimeViews;
 
   return (
-    <div className="card-surface rounded-2xl p-6 md:p-8 border border-[#282846] mt-10">
+    <div className="card-surface rounded-2xl p-4 sm:p-6 md:p-8 border border-[#282846] mt-8 sm:mt-10 w-full min-w-0 overflow-hidden">
       {/* Title & Product Positioning */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#282846] pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#282846] pb-4 sm:pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#00ffcc] mb-1">
+          <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#00ffcc] mb-1">
             <Calculator className="w-4 h-4" />
             Transparent Mathematical Estimator
           </div>
-          <h3 className="text-2xl font-bold font-heading text-white">
+          <h3 className="text-xl sm:text-2xl font-bold font-heading text-white break-words">
             Country-Based RPM & Revenue Calculator
           </h3>
-          <p className="text-xs sm:text-sm text-gray-400 mt-1 max-w-2xl">
+          <p className="text-xs sm:text-sm text-gray-400 mt-1 max-w-2xl leading-relaxed">
             Simulate potential AdSense earnings using verified mathematical formulas and website-owner baseline RPM assumptions.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 bg-[#101026] p-1 rounded-xl border border-[#282846] self-start md:self-auto">
+        <div className="flex items-center gap-1.5 bg-[#101026] p-1 rounded-xl border border-[#282846] self-start md:self-auto flex-wrap">
           {(['monthly', 'annual', 'lifetime'] as const).map((period) => (
             <button
               key={period}
@@ -104,9 +104,9 @@ export const RevenueCalculator: React.FC<RevenueCalculatorProps> = ({
       </div>
 
       {/* Controls Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 mt-6 w-full min-w-0">
         {/* Left Column: Form & Inputs */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-6 w-full min-w-0">
           {/* Market Selection */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2">
@@ -202,7 +202,7 @@ export const RevenueCalculator: React.FC<RevenueCalculatorProps> = ({
         </div>
 
         {/* Right Column: Prominent Calculation Output */}
-        <div className="lg:col-span-5 flex flex-col justify-between bg-gradient-to-br from-[#1a1a3a] to-[#12122b] p-6 rounded-2xl border border-[#2d2d55]">
+        <div className="lg:col-span-5 flex flex-col justify-between bg-gradient-to-br from-[#1a1a3a] to-[#12122b] p-4 sm:p-6 rounded-2xl border border-[#2d2d55] w-full min-w-0 overflow-hidden">
           <div>
             <div className="flex items-center justify-between text-xs text-gray-400 pb-3 border-b border-[#282846]">
               <span className="font-heading font-semibold uppercase tracking-wider text-gray-300">
@@ -217,8 +217,8 @@ export const RevenueCalculator: React.FC<RevenueCalculatorProps> = ({
               </span>
             </div>
 
-            <div className="my-6">
-              <p className="text-4xl sm:text-5xl font-black font-heading text-white tracking-tight">
+            <div className="my-4 sm:my-6">
+              <p className="text-2xl sm:text-4xl lg:text-5xl font-black font-heading text-white tracking-tight break-words">
                 {formatCurrency(displayAmount)}
               </p>
               <p className="text-xs text-gray-400 mt-2">

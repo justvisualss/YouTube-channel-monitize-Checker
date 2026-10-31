@@ -8,8 +8,8 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="bg-[#090916] border-t border-[#1e1e38] text-gray-400 mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-[#090916] border-t border-[#1e1e38] text-gray-400 mt-12 sm:mt-20 w-full min-w-0 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 w-full min-w-0">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-[#1c1c33]">
           {/* Brand Column */}
           <div className="md:col-span-5 space-y-3">
