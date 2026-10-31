@@ -27,7 +27,7 @@ Channel owners may optionally authorize their own accounts via Google OAuth 2.0 
 
 ## 2. Technology Stack
 
-* **Frontend**: React 19, TypeScript, Tailwind CSS v4, Lucide React icons, Motion
+* **Frontend**: React 19, TypeScript, Tailwind CSS v4, Lucide React icons, Motion, @vercel/analytics
 * **Visualizations**: Chart.js v4 (Canvas-based with explicit instance destroy lifecycle)
 * **Backend**: Node.js, Express, Cookie-Parser, Dotenv
 * **Typography**: Orbitron (Headings), Poppins (Body text) via Google Fonts

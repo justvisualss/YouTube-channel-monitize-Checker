@@ -12,6 +12,7 @@ import { BlogPostPage } from './pages/BlogPostPage';
 import { OwnerOAuthModal } from './components/OwnerOAuthModal';
 import { ApiConfigModal } from './components/ApiConfigModal';
 import { getArticleBySlug } from './data/blogArticles';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   const [activePage, setActivePage] = useState<string>('home');
@@ -197,6 +198,9 @@ export default function App() {
         onClose={() => setIsApiModalOpen(false)}
         hasApiKey={hasApiKey}
       />
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
     </div>
   );
 }
