@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
-import { Search, Loader2, Sparkles, ArrowRight, AlertTriangle } from 'lucide-react';
+import { Search, Loader2, Sparkles, ArrowRight } from 'lucide-react';
 
 interface HeroSearchProps {
   onSearch: (query: string) => void;
   isLoading: boolean;
   initialQuery?: string;
-  onExploreDemo?: () => void;
 }
 
 export const HeroSearch: React.FC<HeroSearchProps> = ({
   onSearch,
   isLoading,
   initialQuery = '',
-  onExploreDemo,
 }) => {
   const [query, setQuery] = useState(initialQuery);
 
@@ -41,7 +39,7 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
           Independent YouTube Channel Intelligence
         </div>
 
-        {/* Heading & Subtitle as specified in PDF page 38 */}
+        {/* Heading & Subtitle */}
         <div className="space-y-2">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-heading tracking-tight text-white drop-shadow-sm">
             YouTube Analytics
@@ -67,7 +65,7 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
               />
             </div>
 
-            {/* Green See Analytics Button as specified */}
+            {/* Green See Analytics Button */}
             <button
               type="submit"
               disabled={isLoading || !query.trim()}
@@ -95,7 +93,7 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
             { label: '@Veritasium', val: '@veritasium' },
             { label: '@MrBeast', val: '@MrBeast' },
             { label: '@MKBHD', val: '@mkbhd' },
-            { label: 'Channel ID (UC...)', val: 'UCX6OQ3DkcsbYNE6H8uQQuVA' },
+            { label: 'Channel ID', val: 'UCHnyfMqiRRG1u-2MsSQLbXA' },
           ].map((item) => (
             <button
               key={item.val}
@@ -106,16 +104,6 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
               {item.label}
             </button>
           ))}
-
-          {onExploreDemo && (
-            <button
-              type="button"
-              onClick={onExploreDemo}
-              className="px-3 py-1 rounded-full bg-black/40 hover:bg-black/60 text-[#00ffcc] font-semibold text-xs transition-colors border border-[#00ffcc]/40"
-            >
-              Preview Demo Mode
-            </button>
-          )}
         </div>
       </div>
     </div>

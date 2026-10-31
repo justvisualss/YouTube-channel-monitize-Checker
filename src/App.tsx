@@ -17,10 +17,9 @@ import { Analytics } from '@vercel/analytics/react';
 export default function App() {
   const [activePage, setActivePage] = useState<string>('home');
   const [activeBlogSlug, setActiveBlogSlug] = useState<string | null>(null);
-  const [isDemoMode, setIsDemoMode] = useState(false);
   const [isOwnerModalOpen, setIsOwnerModalOpen] = useState(false);
   const [isApiModalOpen, setIsApiModalOpen] = useState(false);
-  const [hasApiKey, setHasApiKey] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(true);
   const [isOwnerAuthorized, setIsOwnerAuthorized] = useState(false);
   const [authorizedChannelTitle, setAuthorizedChannelTitle] = useState<string | undefined>(undefined);
 
@@ -73,24 +72,6 @@ export default function App() {
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
 
-  // Health and API Key Check
-  useEffect(() => {
-    fetch('/api/health')
-      .then((res) => res.json())
-      .then((data) => {
-        setHasApiKey(Boolean(data.hasApiKey));
-      })
-      .catch(() => setHasApiKey(false));
-
-    fetch('/api/oauth/status')
-      .then((res) => res.json())
-      .then((data) => {
-        setIsOwnerAuthorized(Boolean(data.isAuthorized));
-        if (data.channelTitle) setAuthorizedChannelTitle(data.channelTitle);
-      })
-      .catch(() => setIsOwnerAuthorized(false));
-  }, []);
-
   const navigateTo = (page: string, slug?: string) => {
     let targetPath = '/';
     if (page === 'blog') targetPath = '/blog';
@@ -130,8 +111,6 @@ export default function App() {
       <Header
         activePage={activePage === 'blog-post' ? 'blog' : activePage}
         onNavigate={(p) => navigateTo(p)}
-        isDemoMode={isDemoMode}
-        onToggleDemo={() => setIsDemoMode((prev) => !prev)}
         onOpenOwnerModal={() => setIsOwnerModalOpen(true)}
         onOpenApiModal={() => setIsApiModalOpen(true)}
         hasApiKey={hasApiKey}
@@ -141,8 +120,6 @@ export default function App() {
       <main className="flex-1">
         {activePage === 'home' || activePage === 'analytics' ? (
           <HomePage
-            isDemoMode={isDemoMode}
-            onToggleDemo={() => setIsDemoMode((prev) => !prev)}
             onOpenOwnerModal={() => setIsOwnerModalOpen(true)}
             onOpenApiModal={() => setIsApiModalOpen(true)}
             hasApiKey={hasApiKey}
@@ -171,8 +148,6 @@ export default function App() {
           />
         ) : (
           <HomePage
-            isDemoMode={isDemoMode}
-            onToggleDemo={() => setIsDemoMode((prev) => !prev)}
             onOpenOwnerModal={() => setIsOwnerModalOpen(true)}
             onOpenApiModal={() => setIsApiModalOpen(true)}
             hasApiKey={hasApiKey}

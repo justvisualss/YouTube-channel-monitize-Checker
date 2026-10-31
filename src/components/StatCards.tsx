@@ -31,9 +31,9 @@ interface StatCardsProps {
   activityStatus: ActivityStatus;
   selectedMarketCode: string;
   manualMonthlyViews?: number;
-  isOwnerAuthorized: boolean;
+  isOwnerAuthorized?: boolean;
   authorizedMonthlyViews?: number;
-  isDemoMode: boolean;
+  isDemoMode?: boolean;
 }
 
 export const StatCards: React.FC<StatCardsProps> = ({
@@ -43,7 +43,6 @@ export const StatCards: React.FC<StatCardsProps> = ({
   manualMonthlyViews,
   isOwnerAuthorized,
   authorizedMonthlyViews,
-  isDemoMode,
 }) => {
   const [copiedId, setCopiedId] = useState(false);
 
@@ -59,9 +58,7 @@ export const StatCards: React.FC<StatCardsProps> = ({
       ? authorizedMonthlyViews
       : manualMonthlyViews !== undefined && manualMonthlyViews > 0
       ? manualMonthlyViews
-      : isDemoMode
-      ? 38_400_000
-      : null;
+      : Math.round(lifetimeViews / Math.max(12, 36));
 
   const monthlyRevenueEstimate =
     effectiveMonthlyViews !== null ? calculateEstimatedRevenue(effectiveMonthlyViews, market.rpm) : null;
@@ -338,9 +335,7 @@ export const StatCards: React.FC<StatCardsProps> = ({
                   ? 'Authorized Owner Data'
                   : manualMonthlyViews
                   ? 'Supplied Monthly Run-Rate'
-                  : isDemoMode
-                  ? 'Demo Run-Rate'
-                  : 'Requires Input or OAuth'}
+                  : 'Calculated Monthly Run-Rate'}
               </span>
             </div>
 

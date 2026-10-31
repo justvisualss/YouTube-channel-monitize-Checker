@@ -5,15 +5,11 @@ import {
   X,
   Youtube,
   Key,
-  ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
 
 interface HeaderProps {
   activePage: string;
   onNavigate: (page: string) => void;
-  isDemoMode: boolean;
-  onToggleDemo: () => void;
   onOpenOwnerModal: () => void;
   onOpenApiModal: () => void;
   hasApiKey: boolean;
@@ -22,8 +18,6 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   activePage,
   onNavigate,
-  isDemoMode,
-  onToggleDemo,
   onOpenOwnerModal,
   onOpenApiModal,
   hasApiKey,
@@ -88,24 +82,10 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Controls */}
         <div className="hidden sm:flex items-center gap-2.5">
-          {/* Demo Mode Toggle */}
-          <button
-            onClick={onToggleDemo}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 border transition-all ${
-              isDemoMode
-                ? 'bg-[#ff4d4d] border-[#ff4d4d] text-white font-bold shadow-lg'
-                : 'bg-[#17172f] border-[#282846] text-gray-300 hover:text-white hover:border-gray-500'
-            }`}
-            title="Toggle between live search and 6-chart demo mode"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{isDemoMode ? 'Demo Active' : 'Demo Mode'}</span>
-          </button>
-
           {/* Connect YouTube Owner Analytics */}
           <button
             onClick={onOpenOwnerModal}
-            className="px-3 py-1.5 rounded-xl bg-[#232342] hover:bg-[#2d2d55] border border-[#2d2d55] text-xs font-medium text-white flex items-center gap-1.5 transition-colors"
+            className="px-3.5 py-2 rounded-xl bg-[#232342] hover:bg-[#2d2d55] border border-[#2d2d55] text-xs font-medium text-white flex items-center gap-1.5 transition-colors"
             title="Connect your channel via OAuth for private analytics"
           >
             <Youtube className="w-3.5 h-3.5 text-[#ff4d4d]" />
@@ -118,11 +98,11 @@ export const Header: React.FC<HeaderProps> = ({
             className={`p-2 rounded-xl border transition-colors ${
               hasApiKey
                 ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-400'
-                : 'bg-amber-950/40 border-amber-500/30 text-amber-400'
+                : 'bg-emerald-950/40 border-emerald-500/30 text-emerald-400'
             }`}
-            title={hasApiKey ? 'YouTube Data API v3 Connected' : 'YouTube Data API v3 Setup Guide'}
+            title="YouTube Data API v3 Active"
           >
-            <Key className="w-4 h-4" />
+            <Key className="w-4 h-4 text-emerald-400" />
           </button>
         </div>
 
@@ -158,19 +138,6 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           <div className="pt-3 border-t border-[#232342] flex flex-col gap-2">
-            <button
-              onClick={() => {
-                onToggleDemo();
-                setMobileMenuOpen(false);
-              }}
-              className={`w-full py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 ${
-                isDemoMode ? 'bg-[#ff4d4d] text-white' : 'bg-[#232342] text-gray-200'
-              }`}
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>{isDemoMode ? 'Exit Demo Mode' : 'Explore Demo Mode'}</span>
-            </button>
-
             <button
               onClick={() => {
                 onOpenOwnerModal();

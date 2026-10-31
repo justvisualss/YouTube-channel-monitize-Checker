@@ -3,12 +3,8 @@ import {
   RefreshCw,
   Share2,
   ExternalLink,
-  Sparkles,
   AlertCircle,
   CheckCircle2,
-  Lock,
-  Layers,
-  ArrowRight,
 } from 'lucide-react';
 import { HeroSearch } from '../components/HeroSearch';
 import { ChannelSelector } from '../components/ChannelSelector';
@@ -23,27 +19,22 @@ import {
   YouTubeVideoItem,
   YouTubePlaylistItem,
   ActivityStatus,
-  OwnerAnalyticsSummary,
 } from '../types/youtube';
 import {
-  DEMO_CHANNEL,
-  DEMO_VIDEOS,
-  DEMO_PLAYLISTS,
-  DEMO_OWNER_ANALYTICS,
-} from '../data/demoChannel';
+  resolveChannelDirectly,
+  getChannelDetailsDirectly,
+  getChannelUploadsDirectly,
+  getChannelPlaylistsDirectly,
+} from '../services/youtubeApi';
 import { DEFAULT_MARKET_CODE } from '../config/rpmConfig';
 
 interface HomePageProps {
-  isDemoMode: boolean;
-  onToggleDemo: () => void;
   onOpenOwnerModal: () => void;
   onOpenApiModal: () => void;
   hasApiKey: boolean;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
-  isDemoMode,
-  onToggleDemo,
   onOpenOwnerModal,
   onOpenApiModal,
   hasApiKey,
@@ -56,7 +47,6 @@ export const HomePage: React.FC<HomePageProps> = ({
   >(null);
   const [errorInfo, setErrorInfo] = useState<{
     message: string;
-    code?: string;
     details?: string;
   } | null>(null);
 
@@ -68,61 +58,21 @@ export const HomePage: React.FC<HomePageProps> = ({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [copyLinkSuccess, setCopyLinkSuccess] = useState(false);
 
-  // Estimator & Owner state
+  // Estimator state
   const [selectedMarketCode, setSelectedMarketCode] = useState<string>(DEFAULT_MARKET_CODE);
   const [manualMonthlyViews, setManualMonthlyViews] = useState<number>(250000);
-  const [ownerAnalytics, setOwnerAnalytics] = useState<OwnerAnalyticsSummary | null>(null);
-  const [isOwnerAuthorized, setIsOwnerAuthorized] = useState(false);
 
-  // When demo mode changes, switch channel data accordingly
-  useEffect(() => {
-    if (isDemoMode) {
-      setChannel(DEMO_CHANNEL);
-      setVideos(DEMO_VIDEOS);
-      setPlaylists(DEMO_PLAYLISTS);
-      setOwnerAnalytics(DEMO_OWNER_ANALYTICS);
-      setIsOwnerAuthorized(true);
-      setLastUpdated(new Date().toLocaleTimeString());
-      setErrorInfo(null);
-      setMultipleMatches(null);
-    } else {
-      // If exiting demo mode and no search performed, reset or keep empty
-      if (channel?.id === DEMO_CHANNEL.id) {
-        setChannel(null);
-        setVideos([]);
-        setPlaylists([]);
-        setOwnerAnalytics(null);
-        setIsOwnerAuthorized(false);
-      }
-    }
-  }, [isDemoMode]);
-
-  // Check URL params for channel query on mount or OAuth return
+  // Initial load: check query param or load default channel (@veritasium)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const qParam = params.get('q');
-    if (qParam && !channel) {
+    if (qParam) {
       handleSearch(qParam);
-    }
-
-    const oauthSuccess = params.get('oauth_success');
-    if (oauthSuccess === 'true') {
-      fetchOwnerAnalytics();
+    } else {
+      // Default to live channel so users immediately see live dashboard
+      handleSearch('@veritasium');
     }
   }, []);
-
-  const fetchOwnerAnalytics = async () => {
-    try {
-      const res = await fetch('/api/oauth/analytics');
-      if (res.ok) {
-        const data = await res.json();
-        setOwnerAnalytics(data);
-        setIsOwnerAuthorized(true);
-      }
-    } catch {
-      // Owner analytics optional
-    }
-  };
 
   const handleSearch = async (query: string, bypassCache = false) => {
     setIsSearching(true);
@@ -131,39 +81,45 @@ export const HomePage: React.FC<HomePageProps> = ({
     setSearchQuery(query);
 
     try {
-      const res = await fetch(
-        `/api/channel/resolve?q=${encodeURIComponent(query)}${bypassCache ? '&fresh=true' : ''}`
-      );
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw {
-          status: res.status,
-          message: data.error || 'Channel lookup failed',
-          code: data.code,
-          details: data.details,
-        };
+      // First try server-side proxy if running on full-stack server
+      let resolved = false;
+      try {
+        const res = await fetch(
+          `/api/channel/resolve?q=${encodeURIComponent(query)}${bypassCache ? '&fresh=true' : ''}`
+        );
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await res.json();
+          if (res.ok) {
+            if (data.type === 'multiple') {
+              setMultipleMatches(data.matches);
+              setIsSearching(false);
+              return;
+            }
+            if (data.type === 'single' && data.channel) {
+              await loadChannelFullData(data.channel, bypassCache);
+              resolved = true;
+            }
+          }
+        }
+      } catch {
+        // Fallback to direct client API call (e.g. on Vercel static SPA)
       }
 
-      if (data.type === 'multiple') {
-        setMultipleMatches(data.matches);
-        setIsSearching(false);
-        return;
-      }
-
-      if (data.type === 'single' && data.channel) {
-        await loadChannelFullData(data.channel, bypassCache);
+      // Direct client call to official Google YouTube Data API v3
+      if (!resolved) {
+        const result = await resolveChannelDirectly(query, bypassCache);
+        if (result.type === 'multiple') {
+          setMultipleMatches(result.matches);
+        } else if (result.type === 'single') {
+          await loadChannelFullData(result.channel, bypassCache);
+        }
       }
     } catch (err: any) {
       setErrorInfo({
         message: err.message || 'Failed to resolve YouTube channel',
-        code: err.code,
-        details: err.details,
+        details: err.details?.message || 'Please check the channel identifier or try again.',
       });
-      // Do not clear channel if refreshing failed
-      if (!channel) {
-        setChannel(null);
-      }
     } finally {
       setIsSearching(false);
       setIsRefreshing(false);
@@ -178,34 +134,20 @@ export const HomePage: React.FC<HomePageProps> = ({
     const uploadsPlaylistId = channelData.contentDetails?.relatedPlaylists?.uploads;
     const channelId = channelData.id;
 
-    // Concurrently fetch uploads and playlists
     try {
-      const [uploadsRes, playlistsRes] = await Promise.all([
-        uploadsPlaylistId
-          ? fetch(
-              `/api/channel/uploads?uploadsPlaylistId=${encodeURIComponent(uploadsPlaylistId)}&channelId=${encodeURIComponent(
-                channelId
-              )}${fresh ? '&fresh=true' : ''}`
-            )
-          : null,
-        fetch(`/api/channel/playlists?channelId=${encodeURIComponent(channelId)}${fresh ? '&fresh=true' : ''}`),
+      const [uploadsResult, playlistsResult] = await Promise.allSettled([
+        uploadsPlaylistId ? getChannelUploadsDirectly(uploadsPlaylistId, 25) : Promise.resolve({ videos: [] }),
+        getChannelPlaylistsDirectly(channelId),
       ]);
 
-      if (uploadsRes && uploadsRes.ok) {
-        const uData = await uploadsRes.json();
-        setVideos(uData.videos || []);
-      } else {
-        setVideos([]);
+      if (uploadsResult.status === 'fulfilled') {
+        setVideos(uploadsResult.value.videos || []);
       }
-
-      if (playlistsRes && playlistsRes.ok) {
-        const pData = await playlistsRes.json();
-        setPlaylists(pData.playlists || []);
-      } else {
-        setPlaylists([]);
+      if (playlistsResult.status === 'fulfilled') {
+        setPlaylists(playlistsResult.value || []);
       }
     } catch {
-      // Partial video fetch failure handled gracefully
+      // ignore partial video failure
     }
   };
 
@@ -213,9 +155,7 @@ export const HomePage: React.FC<HomePageProps> = ({
     setIsSearching(true);
     setMultipleMatches(null);
     try {
-      const res = await fetch(`/api/channel/details?id=${encodeURIComponent(channelId)}`);
-      const channelData = await res.json();
-      if (!res.ok) throw new Error(channelData.error || 'Failed to fetch selected channel');
+      const channelData = await getChannelDetailsDirectly(channelId);
       await loadChannelFullData(channelData);
     } catch (err: any) {
       setErrorInfo({ message: err.message });
@@ -238,7 +178,6 @@ export const HomePage: React.FC<HomePageProps> = ({
     setTimeout(() => setCopyLinkSuccess(false), 2500);
   };
 
-  // Determine evidence-based activity status label (PDF page 15)
   const computeActivityStatus = (): ActivityStatus => {
     if (!channel) return 'Activity information unavailable';
     if (videos.length > 0) {
@@ -260,26 +199,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         onSearch={(q) => handleSearch(q)}
         isLoading={isSearching}
         initialQuery={searchQuery}
-        onExploreDemo={!isDemoMode ? onToggleDemo : undefined}
       />
-
-      {/* Demo Mode Notification Banner */}
-      {isDemoMode && (
-        <div className="p-4 rounded-2xl bg-gradient-to-r from-[#ff4d4d]/20 to-[#ff7e5f]/20 border border-[#ff4d4d]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-lg">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ff4d4d] animate-ping flex-shrink-0" />
-            <p className="font-semibold text-white">
-              DEMO DATA — NOT REAL CHANNEL ANALYTICS (Previewing All 6 Chart Visualizations)
-            </p>
-          </div>
-          <button
-            onClick={onToggleDemo}
-            className="px-3 py-1.5 rounded-lg bg-[#ff4d4d] hover:bg-[#e04343] text-white font-bold transition-colors self-end sm:self-auto"
-          >
-            Exit Demo Mode
-          </button>
-        </div>
-      )}
 
       {/* Multiple Matches Disambiguation Selector */}
       {multipleMatches && (
@@ -291,7 +211,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         />
       )}
 
-      {/* Error and Recoverable Failure Alert */}
+      {/* Error and Failure Alert */}
       {errorInfo && !multipleMatches && (
         <div className="card-surface rounded-2xl p-6 border border-rose-500/40 bg-rose-950/20 text-xs text-rose-200 space-y-3">
           <div className="flex items-center gap-2.5 text-rose-400 font-bold text-sm font-heading">
@@ -307,23 +227,15 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="pl-7 pt-2 flex flex-wrap items-center gap-3">
             <button
               onClick={() => handleSearch(searchQuery)}
-              className="px-3.5 py-1.5 bg-rose-900/40 hover:bg-rose-900/60 border border-rose-500/30 rounded-lg text-rose-200 font-medium transition-colors"
+              className="px-4 py-2 bg-rose-900/40 hover:bg-rose-900/60 border border-rose-500/30 rounded-lg text-rose-200 font-semibold transition-colors"
             >
               Retry Search
             </button>
-            {!hasApiKey && (
-              <button
-                onClick={onOpenApiModal}
-                className="px-3.5 py-1.5 bg-[#232342] hover:bg-[#2d2d55] text-white rounded-lg font-medium transition-colors"
-              >
-                Configure Server API Key
-              </button>
-            )}
             <button
-              onClick={onToggleDemo}
-              className="px-3.5 py-1.5 bg-[#00ffcc] text-[#0f0f23] rounded-lg font-bold font-heading uppercase transition-colors"
+              onClick={onOpenApiModal}
+              className="px-4 py-2 bg-[#232342] hover:bg-[#2d2d55] text-white rounded-lg font-medium transition-colors"
             >
-              Explore With Demo Mode
+              API Key Status
             </button>
           </div>
         </div>
@@ -357,12 +269,9 @@ export const HomePage: React.FC<HomePageProps> = ({
                   {channel.snippet?.description || 'Public YouTube Channel Profile'}
                 </p>
                 <div className="flex flex-wrap items-center gap-3 mt-2 text-[11px] text-gray-400">
-                  <span>Data Source: <strong>YouTube Data API v3 (Public)</strong></span>
+                  <span>Data Source: <strong className="text-emerald-400">YouTube Data API v3 (Live)</strong></span>
                   <span>•</span>
                   <span>Updated: {lastUpdated || 'Just now'}</span>
-                  {isDemoMode && (
-                    <span className="text-[#ff4d4d] font-bold">• Demo Snapshot</span>
-                  )}
                 </div>
               </div>
             </div>
@@ -415,9 +324,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             activityStatus={computeActivityStatus()}
             selectedMarketCode={selectedMarketCode}
             manualMonthlyViews={manualMonthlyViews}
-            isOwnerAuthorized={isOwnerAuthorized}
-            authorizedMonthlyViews={ownerAnalytics?.totalViews}
-            isDemoMode={isDemoMode}
+            isOwnerAuthorized={false}
+            isDemoMode={false}
           />
 
           {/* Country-Based RPM & Revenue Estimator */}
@@ -432,10 +340,8 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           {/* Exactly Six Interactive Chart.js Visualizations */}
           <ChartsSection
+            channel={channel}
             videos={videos}
-            ownerAnalytics={ownerAnalytics}
-            isOwnerAuthorized={isOwnerAuthorized}
-            isDemoMode={isDemoMode}
             manualMonthlyViews={manualMonthlyViews}
             selectedMarketCode={selectedMarketCode}
           />
@@ -454,33 +360,6 @@ export const HomePage: React.FC<HomePageProps> = ({
             uploadsPlaylistId={channel.contentDetails?.relatedPlaylists?.uploads}
             channelTitle={channel.snippet?.title}
           />
-        </div>
-      )}
-
-      {/* Empty State when no channel selected yet */}
-      {!channel && !multipleMatches && !errorInfo && !isSearching && (
-        <div className="card-surface rounded-3xl p-10 sm:p-14 border border-[#282846] text-center space-y-6 max-w-2xl mx-auto">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#ff4d4d] to-[#ff7e5f] flex items-center justify-center text-white mx-auto shadow-xl">
-            <Layers className="w-8 h-8" />
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-2xl font-bold font-heading text-white">
-              Ready to Analyze Any Channel
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-400 max-w-md mx-auto leading-relaxed">
-              Enter any YouTube channel name, @handle, URL, or Channel ID above to explore 12 public metric cards, 6 interactive charts, recent uploads, and transparent RPM revenue estimates.
-            </p>
-          </div>
-
-          <div className="pt-2 flex flex-wrap justify-center gap-3">
-            <button
-              onClick={onToggleDemo}
-              className="px-5 py-2.5 rounded-xl bg-[#00ffcc] text-[#0f0f23] font-heading font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>Launch Demo Mode (All 6 Charts)</span>
-            </button>
-          </div>
         </div>
       )}
     </div>
